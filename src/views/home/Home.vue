@@ -19,7 +19,11 @@
       />
       <goods-list :goods-list="showGoods" />
     </scroll>
-    <back-top @click.native="backClick" v-show="isShowBackTop" />
+    <back-top
+      class="backTop"
+      @click.native="backClick"
+      v-show="isShowBackTop"
+    />
   </div>
 </template> 
 
@@ -37,6 +41,7 @@ import Scroll from "components/common/scroll/Scroll";
 import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
+import { debounce } from "common/untils";
 
 export default {
   name: "Home",
@@ -77,6 +82,13 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
+  mounted() {
+    // 解决滚动区域无法滚动BUG--2. 接收事件 (1.在GoodsListItem中)
+    const refresh = debounce(this.$refs.scroll.refresh, 100);
+    this.$bus.$on("imgLoad", () => {
+      refresh();
+    });
+  },
   methods: {
     tabClick(index) {
       switch (index) {
@@ -105,7 +117,6 @@ export default {
     // 上拉加载更多
     loadMore() {
       this.getHomeGoods(this.currentType);
-      this.$refs.scroll.refresh();
     },
 
     // 网络请求相关方法
@@ -115,13 +126,13 @@ export default {
         this.recommends = res.data.recommend.list;
       });
     },
-
     // 请求首页展示数据
     getHomeGoods(type) {
       const page = this.goods[type].page + 1;
       getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page++;
+
         this.$refs.scroll.finishPullUp();
       });
     },
@@ -158,5 +169,9 @@ export default {
   left: 0;
   right: 0;
   overflow: hidden;
+}
+
+.backTop {
+  transition: all 1s;
 }
 </style>

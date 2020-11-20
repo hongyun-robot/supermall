@@ -1,6 +1,6 @@
 <template>
   <div class="item">
-    <img :src="goodsListItem['show'].img" />
+    <img :src="goodsListItem['show'].img" @load="imgLoad" />
     <div class="info">
       <p>{{ goodsListItem.title }}</p>
       <span class="first">￥{{ goodsListItem.price }}</span>
@@ -15,6 +15,12 @@ export default {
     goodsListItem: {
       type: Object,
       default: {},
+    },
+  },
+  methods: {
+    // 解决滚动区域无法滚动BUG--1.监听图片是否加载完成并发送事件
+    imgLoad() {
+      this.$bus.$emit("imgLoad");
     },
   },
 };
