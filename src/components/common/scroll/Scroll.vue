@@ -17,6 +17,7 @@ export default {
   data() {
     return {
       scroll: null,
+      position: null,
     };
   },
   props: {
@@ -39,6 +40,7 @@ export default {
     // 监听滑动事件， 传滑动距离给父组件
     if (this.probeType == 2 || this.probeType == 3) {
       this.scroll.on("scroll", (position) => {
+        this.position = position;
         this.$emit("scrollPosition", position);
       });
     }
@@ -50,14 +52,24 @@ export default {
     }
   },
   methods: {
+    // 滚动到指定位置
     scrollTo(x, y, time = 400) {
       this.scroll && this.scrollTo && this.scroll.scrollTo(x, y, time);
     },
+
+    // 再次上拉加载更多
     finishPullUp() {
       this.scroll && this.scroll.finishPullUp && this.scroll.finishPullUp();
     },
+
+    // 刷新 better-scroll
     refresh() {
       this.scroll && this.scroll.refresh && this.scroll.refresh();
+    },
+
+    // 获取到滚动区域 Y 轴位置
+    getScrollY() {
+      return this.scroll ? this.position.y : 0;
     },
   },
 };

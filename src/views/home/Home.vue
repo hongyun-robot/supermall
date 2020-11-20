@@ -1,6 +1,14 @@
 <template>
   <div id="home">
     <nav-bar class="home_nav"><div slot="center">购物街</div></nav-bar>
+    <!-- scroll 内 tabControl 的替换品 -->
+    <tab-control
+      :titles="['流行', '新款', '精选']"
+      @tabClick="tabClick"
+      ref="tabControl2"
+      class="opacity"
+      :class="{ tab_control: isShowTabControl }"
+    />
     <scroll
       class="content"
       ref="scroll"
@@ -9,13 +17,13 @@
       :pull-up-load="true"
       @pullingUp="loadMore"
     >
-      <home-swiper :banners="banners" />
+      <home-swiper :banners="banners" @imgLoad="imgLoad" />
       <recommend-view :recommends="recommends" />
       <feature-view />
       <tab-control
         :titles="['流行', '新款', '精选']"
-        class="tab-control"
         @tabClick="tabClick"
+        ref="tabControl1"
       />
       <goods-list :goods-list="showGoods" />
     </scroll>
@@ -55,7 +63,10 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBackTop: false,
+      isShowBackTop: false, // 是否显示返回顶部的状态
+      tabControlOffsetTop: 0, // 将 tabControl 的 offsetTop 数据保存下来
+      isShowTabControl: false, // 是否将 tabControl 替换组件显示出来的状态
+      saveScrollY: 0, // 改变页面保存当前位置
     };
   },
   components: {
@@ -89,6 +100,15 @@ export default {
       refresh();
     });
   },
+  // 保存切换前滚动区域的 Y 轴位置
+  deactivated() {
+    this.saveScrollY = this.$refs.scroll.getScrollY();
+  },
+  // 切换回来自动滚动到切换前位置，并进行刷新
+  activated() {
+    this.$refs.scroll.scrollTo(0, this.saveScrollY, 500);
+    this.$refs.scroll.refresh();
+  },
   methods: {
     tabClick(index) {
       switch (index) {
@@ -104,14 +124,25 @@ export default {
           this.currentType = "sell";
           break;
       }
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
     // 点击返回顶部
     backClick() {
       this.$refs.scroll.scrollTo(0, 0, 500);
     },
-    // 返回顶部按钮显示与隐藏
+    // scroll
     scrollEvent(position) {
+      // 1. 判断返回顶部组件是否显示
       this.isShowBackTop = -position.y > 1000;
+
+      // 2. 是否显示 scroll 外面的 tabControl
+      this.isShowTabControl = -position.y > this.tabControlOffsetTop;
+    },
+
+    imgLoad() {
+      // 将数据保存下来
+      this.tabControlOffsetTop = this.$refs.tabControl1.$el.offsetTop;
     },
 
     // 上拉加载更多
@@ -150,16 +181,23 @@ export default {
   font-size: var(--font-size);
   background-color: var(--color-tint);
   color: #fff;
-  position: fixed;
+  /* position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 10;
+  z-index: 10; */
 }
 
-.tab-control {
-  position: sticky;
-  top: 0.44rem;
+/* 做个过渡效果 */
+.opacity {
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.tab_control {
+  opacity: 1;
+  position: relative;
+  z-index: 9;
 }
 
 .content {
