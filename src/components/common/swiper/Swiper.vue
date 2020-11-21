@@ -49,6 +49,7 @@ export default {
       swiperStyle: {}, // swiper样式
       currentIndex: 1, // 计数器
       scrolling: false, // 是否在滚动
+      observer: null,
     };
   },
   mounted() {
@@ -81,6 +82,13 @@ export default {
 
     // 检验正确位置
     checkPosition() {
+      let swiperEl = document.querySelector(".swiper");
+      if (swiperEl != undefined) {
+        if (this.totalWidth != swiperEl.offsetWidth) {
+          this.totalWidth = swiperEl.offsetWidth;
+          this.setTransform(-this.currentIndex * this.totalWidth);
+        }
+      }
       window.setTimeout(() => {
         if (this.currentIndex >= this.slideCount + 1) {
           // this.swiperStyle.transition = "none";
@@ -95,7 +103,8 @@ export default {
 
     // 设置滚动位置
     setTransform(position) {
-      this.swiperStyle.transform = `translate3d(${position}px, 0, 0)`;
+      position = position / 100;
+      this.swiperStyle.transform = `translateX(${position}rem)`;
     },
 
     // 添加元素

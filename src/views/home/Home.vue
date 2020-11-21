@@ -181,11 +181,6 @@ export default {
   font-size: var(--font-size);
   background-color: var(--color-tint);
   color: #fff;
-  /* position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10; */
 }
 
 /* 做个过渡效果 */
@@ -202,8 +197,8 @@ export default {
 
 .content {
   position: absolute;
-  top: 44px;
-  bottom: 49px;
+  top: 0.44rem;
+  bottom: 0.49rem;
   left: 0;
   right: 0;
   overflow: hidden;

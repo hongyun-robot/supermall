@@ -23,6 +23,6 @@ export default {
 #app {
   max-width: 750px;
   min-width: 320px;
-  font-size: 0.14rem;
+  font-size: 14px;
 }
 </style>

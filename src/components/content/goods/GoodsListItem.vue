@@ -1,5 +1,5 @@
 <template>
-  <div class="item">
+  <div class="item" @click="itemClick">
     <img :src="goodsListItem['show'].img" @load="imgLoad" />
     <div class="info">
       <p>{{ goodsListItem.title }}</p>
@@ -21,6 +21,9 @@ export default {
     // 解决滚动区域无法滚动BUG--1.监听图片是否加载完成并发送事件
     imgLoad() {
       this.$bus.$emit("imgLoad");
+    },
+    itemClick() {
+      this.$router.push("/detail/" + this.goodsListItem.iid);
     },
   },
 };
@@ -63,6 +66,6 @@ export default {
   content: "";
   width: 0.14rem;
   height: 0.14rem;
-  background: url("~assets/image/home/收 藏.png") 0 0/14px 14px;
+  background: url("~assets/image/home/收 藏.png") 0 0/0.14rem 0.14rem;
 }
 </style>

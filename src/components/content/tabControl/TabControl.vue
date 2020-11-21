@@ -23,6 +23,7 @@ export default {
   data() {
     return {
       currentIndex: 0,
+      observer: null,
     };
   },
   methods: {
