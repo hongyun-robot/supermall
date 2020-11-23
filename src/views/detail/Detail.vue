@@ -1,14 +1,16 @@
 <template>
   <div id="detail">
     <detail-nav-bar></detail-nav-bar>
-    <detail-swiper :top-images="topImages"></detail-swiper>
-    <detail-base-info :detail-goods="detailGoods"></detail-base-info>
+    <detail-swiper :top-images="topImages" />
+    <detail-base-info :detail-goods="detailGoods" />
+    <detail-shop-info :shop="shop"></detail-shop-info>
   </div>
 </template> 
 <script>
 import DetailNavBar from "./childComponents/DetailNavBar";
 import DetailSwiper from "./childComponents/DetailSwiper";
 import DetailBaseInfo from "./childComponents/DetailBaseInfo.vue";
+import DetailShopInfo from "./childComponents/DetailShopInfo.vue";
 
 import { getDetail, getDetailGoods, getShop } from "network/detail";
 
@@ -18,12 +20,14 @@ export default {
     DetailNavBar,
     DetailSwiper,
     DetailBaseInfo,
+    DetailShopInfo,
   },
   data() {
     return {
       iid: "",
       topImages: [],
       detailGoods: {},
+      shop: {},
     };
   },
   created() {
@@ -39,10 +43,13 @@ export default {
         const result = res.result;
         this.topImages = result.itemInfo.topImages;
 
-        this.detailGoods = new getDetailGoods(result.itemInfo, result.columns);
+        this.detailGoods = new getDetailGoods(
+          result.itemInfo,
+          result.columns,
+          result.shopInfo.services
+        );
 
-        // this.detailGoods = new getShop(result.shopInfo.services);
-        // console.log(this.detailGoods.services);
+        this.shop = new getShop(result.shopInfo);
       });
     },
   },
