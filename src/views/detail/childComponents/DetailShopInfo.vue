@@ -7,27 +7,30 @@
       </a>
     </div>
     <div class="shop_middle">
-      <div class="shop_middle_left">
-        <div class="info_sells">
-          <p>{{ totalSell() }}</p>
-          <p>总销量</p>
+      <div class="shop_middle_top">
+        <div class="shop_middle_left">
+          <div class="info_sells">
+            <p>{{ totalSell() }}</p>
+            <p>总销量</p>
+          </div>
+          <div class="info_goods">
+            <p>{{ shop.cGoods }}</p>
+            <p>全部宝贝</p>
+          </div>
         </div>
-        <div class="info_goods">
-          <p>{{ shop.cGoods }}</p>
-          <p>全部宝贝</p>
+        <div class="shop_middle_right">
+          <div v-for="(item, index) in shop.score" :key="index">
+            <span>{{ item.name }}：</span>
+            <span :class="{ better: item.isBetter }" class="score">{{
+              item.score
+            }}</span>
+            <span :class="{ betterE: item.isBetter }" class="scoreE">{{
+              evaluation(item.score)
+            }}</span>
+          </div>
         </div>
       </div>
-      <div class="shop_middle_right">
-        <div v-for="(item, index) in shop.score" :key="index">
-          <span>{{ item.name }}：</span>
-          <span :class="{ better: item.isBetter }" class="score">{{
-            item.score
-          }}</span>
-          <span :class="{ betterE: item.isBetter }" class="scoreE">{{
-            evaluation(item.score)
-          }}</span>
-        </div>
-      </div>
+      <div class="shop_middle_bottom">进店逛逛</div>
     </div>
   </div>
 </template> 
@@ -74,11 +77,11 @@ export default {
   font-size: 0.16rem;
 }
 
-.shop_middle {
+.shop_middle_top {
   display: flex;
 }
 
-.shop_middle > div {
+.shop_middle_top > div {
   flex: 1;
 }
 
@@ -102,7 +105,6 @@ export default {
 .info_sells,
 .info_goods,
 .shop_middle_right {
-  /* padding-top: 3px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -110,7 +112,28 @@ export default {
 
 .shop_middle_right div {
   display: flex;
-  justify-content: space-around;
+  margin-bottom: 0.05rem;
+}
+
+.shop_middle_right div span:first-child {
+  width: 1rem;
+  text-align: center;
+}
+
+.shop_middle_right div span:nth-child(2) {
+  width: 0.55rem;
+}
+
+.shop_middle_bottom {
+  margin: 0 auto;
+  width: 1rem;
+  height: 0.4rem;
+  line-height: 0.4rem;
+  text-align: center;
+  color: #fff;
+  background-color: rgba(128, 128, 128, 0.4);
+  border-radius: 0.17rem;
+  margin-top: 0.2rem;
 }
 
 .score {
