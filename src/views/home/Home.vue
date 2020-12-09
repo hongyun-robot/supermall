@@ -50,6 +50,7 @@ import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 import { debounce } from "common/untils";
+import { itemImageLoad } from "common/mixins";
 
 export default {
   name: "Home",
@@ -69,15 +70,16 @@ export default {
       saveScrollY: 0, // 改变页面保存当前位置
     };
   },
+  mixins: [itemImageLoad],
   components: {
     HomeSwiper,
     RecommendView,
     FeatureView,
     NavBar,
     TabControl,
-    GoodsList,
-    Scroll,
     BackTop,
+    Scroll,
+    GoodsList,
   },
   computed: {
     showGoods() {
@@ -93,16 +95,11 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
-  mounted() {
-    // 解决滚动区域无法滚动BUG--2. 接收事件 (1.在GoodsListItem中)
-    const refresh = debounce(this.$refs.scroll.refresh, 100);
-    this.$bus.$on("imgLoad", () => {
-      refresh();
-    });
-  },
   // 保存切换前滚动区域的 Y 轴位置
   deactivated() {
     this.saveScrollY = this.$refs.scroll.getScrollY();
+
+    this.$bus.$off("imgLoad", this.imgListener);
   },
   // 切换回来自动滚动到切换前位置，并进行刷新
   activated() {
